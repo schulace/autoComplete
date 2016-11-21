@@ -23,6 +23,17 @@ public class AutoComplete
         private Term   data;
         private Node[] nexts;
         private int    prefixTo;
+        private int    words;
+
+
+        // ----------------------------------------------------------
+        /**
+         * @return the words
+         */
+        public int getWords()
+        {
+            return words;
+        }
 
 
         // ----------------------------------------------------------
@@ -114,8 +125,6 @@ public class AutoComplete
         }
 
 
-
-
         // ----------------------------------------------------------
         /**
          * Create a new Node object.
@@ -198,7 +207,6 @@ public class AutoComplete
         return this.root;
     }
 
-
     // ----------------------------------------------------------
     /**
      * Adds a term to the AutoComplete
@@ -206,14 +214,6 @@ public class AutoComplete
      * @param t
      *            the term to add
      */
-    public void addTerm(Term t)
-    {
-        if (t == null || t.length() == 0)
-        {
-            return;
-        }
-        addTerm(t, root, "");
-    }
 
 
     // ----------------------------------------------------------
@@ -228,6 +228,21 @@ public class AutoComplete
     public void addWord(String strIn, int weight)
     {
         addTerm(new Term(strIn, weight));
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Place a description of your method here.
+     *
+     * @param term
+     */
+    public void addTerm(Term term)
+    {
+        if (term.getQuery() != null && term.getQuery().length() > 0)
+        {
+            addTerm(term.getQuery(), root, "", term.getWeight());
+        }
     }
 
 
@@ -318,7 +333,7 @@ public class AutoComplete
      * @param currentPrefix
      *            the letters preceeding this insertion in the trie
      */
-    private void addTerm(Term s, Node n, String currentPrefix)
+    private void addTerm(String s, Node n, String currentPrefix, int weight)
     {
         /*
          * if the length is 0 and the currently examined node doesn't have a
@@ -334,16 +349,16 @@ public class AutoComplete
              * when it encounters something there (default is to leave things be
              * and not overwrite)
              */
-            n.setData(new Term(currentPrefix, s.getWeight()));
+            n.setData(new Term(currentPrefix, weight));
             return;
         }
         /*
          * if the next node that this method would call is null, create a node
          * there and insert it into the AutoComplete.
          */
-        if (n.getNext(s.getQuery().charAt(0)) == null)
+        if (n.getNext(s.charAt(0)) == null)
         {
-            n.insert(s.getQuery().charAt(0), new Node(null));
+            n.insert(s.charAt(0), new Node(null));
         }
         /*
          * recursively calls this method with term being 1 character shorter
@@ -353,9 +368,10 @@ public class AutoComplete
          * moves a character from term's start to currentPrefix's end)
          */
         addTerm(
-            new Term(s.getQuery().substring(1), s.getWeight()),
-            n.getNext(s.getQuery().charAt(0)),
-            currentPrefix + s.getQuery().charAt(0));
+            s.substring(1),
+            n.getNext(s.charAt(0)),
+            currentPrefix + s.charAt(0),
+            weight);
     }
 
 
