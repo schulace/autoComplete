@@ -1,8 +1,8 @@
 package tests;
 
 import code.Term;
-import code.Trie;
-import code.Trie.Node;
+import code.AutoComplete;
+import code.AutoComplete.Node;
 
 // -------------------------------------------------------------------------
 /**
@@ -18,16 +18,20 @@ public class TermTest
 {
 
     private Term t;
-    private Trie tr;
+    private AutoComplete tr;
 
 
     public void setUp()
     {
         t = new Term("asdf", 1000);
-        tr = new Trie();
+        tr = new AutoComplete();
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * tests the addition of stuff to the trie
+     */
     public void testThing()
     {
         Term st = new Term("asdfa", 3000);
@@ -50,6 +54,20 @@ public class TermTest
         assertEquals(7, root.getPrefixes());
     }
 
+        // ----------------------------------------------------------
+        /**
+         * test for comparators of term
+         */
+        public void testComparators()
+        {
+            Term ts = new Term("hello", 4);
+            Term tb = new Term("hell", 3);
+            assertEquals(0, Term.byPrefixOrder(1).compare(ts, tb));
+            assertEquals(1, Term.byPrefixOrder(4).compare(ts,tb));
+            tb = new Term("no thanks", 3);
+            assertEquals('h'-'n', Term.byPrefixOrder(1000).compare(ts, tb));
+            assertEquals(-1, Term.byReverseWeightOrder().compare(ts,tb));
+        }
     private boolean assertErrorThrown(Runnable r, Class<?> exception)
     {
         Exception ex = null;

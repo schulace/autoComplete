@@ -6,7 +6,7 @@ public class Term
     implements Comparable<Term>
 {
     private String query;
-    private int  weight;
+    private int    weight;
 
 
     // ----------------------------------------------------------
@@ -97,7 +97,7 @@ public class Term
             @Override
             public int compare(Term o1, Term o2)
             {
-                return o1.getWeight() - o2.getWeight();
+                return o2.getWeight() - o1.getWeight();
             }
 
         };
@@ -127,23 +127,26 @@ public class Term
                 {
                     return 0;
                 }
-                if(o1 == null)
+                if (o1 == null)
                 {
                     return -1;
                 }
-                if(o2 == null)
+                if (o2 == null)
                 {
                     return 1;
                 }
-
-                for (int x = 0; x < Math
-                    .max(o1.length(), Math.max(r, o2.length())); x++)
+                int goTo = Math.min(o1.length(), Math.min(r, o2.length()));
+                for (int x = 0; x < goTo; x++)
                 {
                     if (o1.getQuery().charAt(x) != o2.getQuery().charAt(x))
                     {
                         return o1.getQuery().charAt(x)
                             - o2.getQuery().charAt(x);
                     }
+                }
+                if (o1.length() > r && o2.length() > r)
+                {
+                    return 0;
                 }
                 return o1.length() - o2.length();
             }

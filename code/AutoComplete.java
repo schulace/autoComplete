@@ -8,11 +8,11 @@ package code;
  * @version Nov 11, 2016
  */
 
-public class Trie
+public class AutoComplete
 {
     // -------------------------------------------------------------------------
     /**
-     * A node class for the Trie (like a binary node but a 26-ary node)
+     * A node class for the AutoComplete (like a binary node but a 26-ary node)
      *
      * @author schulace
      * @version Nov 13, 2016
@@ -22,7 +22,6 @@ public class Trie
 
         private Term   data;
         private Node[] nexts;
-        private String prefix;
         private int    prefixTo;
 
 
@@ -115,25 +114,6 @@ public class Trie
         }
 
 
-        // ----------------------------------------------------------
-        /**
-         * @return the prefix
-         */
-        public String getPrefix()
-        {
-            return prefix;
-        }
-
-
-        // ----------------------------------------------------------
-        /**
-         * @param prefix
-         *            the prefix to set
-         */
-        public void setPrefix(String prefix)
-        {
-            this.prefix = prefix;
-        }
 
 
         // ----------------------------------------------------------
@@ -147,7 +127,6 @@ public class Trie
         {
             data = t;
             nexts = new Node[26];
-            prefix = "";
         }
 
 
@@ -200,9 +179,9 @@ public class Trie
 
     // ----------------------------------------------------------
     /**
-     * creates a new Trie with an empty node as the head.
+     * creates a new AutoComplete with an empty node as the head.
      */
-    public Trie()
+    public AutoComplete()
     {
         root = new Node(null);
     }
@@ -222,7 +201,7 @@ public class Trie
 
     // ----------------------------------------------------------
     /**
-     * Adds a term to the Trie
+     * Adds a term to the AutoComplete
      *
      * @param t
      *            the term to add
@@ -360,7 +339,7 @@ public class Trie
         }
         /*
          * if the next node that this method would call is null, create a node
-         * there and insert it into the Trie.
+         * there and insert it into the AutoComplete.
          */
         if (n.getNext(s.getQuery().charAt(0)) == null)
         {
