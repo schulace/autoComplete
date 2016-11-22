@@ -227,7 +227,18 @@ public class AutoComplete
      */
     public void addWord(String strIn, int weight)
     {
-        addTerm(new Term(strIn, weight));
+        if (strIn == null)
+        {
+            throw new NullPointerException("input can't be null");
+        }
+        if (strIn.length() > 0)
+        {
+            addTerm(
+                new StringBuilder(strIn),
+                root,
+                new StringBuilder(strIn.length()),
+                weight);
+        }
     }
 
 
@@ -241,7 +252,11 @@ public class AutoComplete
     {
         if (term.getQuery() != null && term.getQuery().length() > 0)
         {
-            addTerm(term.getQuery(), root, "", term.getWeight());
+            addTerm(
+                new StringBuilder(term.getQuery()),
+                root,
+                new StringBuilder(term.getQuery().length()),
+                term.getWeight());
         }
     }
 
@@ -333,7 +348,11 @@ public class AutoComplete
      * @param currentPrefix
      *            the letters preceeding this insertion in the trie
      */
-    private void addTerm(String s, Node n, String currentPrefix, int weight)
+    private void addTerm(
+        StringBuilder s,
+        Node n,
+        StringBuilder currentPrefix,
+        int weight)
     {
         /*
          * if the length is 0 and the currently examined node doesn't have a
@@ -349,7 +368,7 @@ public class AutoComplete
              * when it encounters something there (default is to leave things be
              * and not overwrite)
              */
-            n.setData(new Term(currentPrefix, weight));
+            n.setData(new Term(currentPrefix.toString(), weight));
             return;
         }
         /*
@@ -368,9 +387,9 @@ public class AutoComplete
          * moves a character from term's start to currentPrefix's end)
          */
         addTerm(
-            s.substring(1),
+            s.delete(0, 1),
             n.getNext(s.charAt(0)),
-            currentPrefix + s.charAt(0),
+            currentPrefix.append(s.charAt(0)),
             weight);
     }
 
