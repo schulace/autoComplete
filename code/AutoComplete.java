@@ -386,10 +386,13 @@ public class AutoComplete
          * currentPrefix with the first character of term appended. (basically
          * moves a character from term's start to currentPrefix's end)
          */
+        char c = s.charAt(0);
+        s.delete(0, 1);
+        currentPrefix.append(c);
         addTerm(
-            s.delete(0, 1),
-            n.getNext(s.charAt(0)),
-            currentPrefix.append(s.charAt(0)),
+            s,
+            n.getNext(c),
+            currentPrefix,
             weight);
     }
 
