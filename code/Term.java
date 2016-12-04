@@ -2,7 +2,17 @@ package code;
 
 import java.util.Comparator;
 
+// -------------------------------------------------------------------------
+/**
+ *  Write a one-sentence summary of your class here.
+ *  Follow it with additional details about its purpose, what abstraction
+ *  it represents, and how to use it.
+ *
+ *  @author schulace
+ *  @version Nov 25, 2016
+ */
 public class Term
+
     implements Comparable<Term>
 {
     private String query;
@@ -135,20 +145,10 @@ public class Term
                 {
                     return 1;
                 }
-                int goTo = Math.min(o1.length(), Math.min(r, o2.length()));
-                for (int x = 0; x < goTo; x++)
-                {
-                    if (o1.getQuery().charAt(x) != o2.getQuery().charAt(x))
-                    {
-                        return o1.getQuery().charAt(x)
-                            - o2.getQuery().charAt(x);
-                    }
-                }
-                if (o1.length() > r && o2.length() > r)
-                {
-                    return 0;
-                }
-                return o1.length() - o2.length();
+                String str1 = o1.getQuery().substring(0, Math.min(r, o1.length()-1));
+                String str2 = o2.getQuery().substring(0, Math.min(r, o2.length()-1));
+                return str1.compareTo(str2);
+
             }
         };
     }

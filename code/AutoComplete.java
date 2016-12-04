@@ -1,5 +1,8 @@
 package code;
 
+import java.util.ArrayList;
+import java.util.Stack;
+
 // -------------------------------------------------------------------------
 /**
  * a tree where nodes have 26 branches
@@ -22,19 +25,7 @@ public class AutoComplete
 
         private Term   data;
         private Node[] nexts;
-        private int    prefixTo;
         private int    words;
-
-
-        // ----------------------------------------------------------
-        /**
-         * @return the words
-         */
-        public int getWords()
-        {
-            return words;
-        }
-
 
         // ----------------------------------------------------------
         /**
@@ -50,14 +41,14 @@ public class AutoComplete
         /**
          * figures out how many words the current node is a prefix to
          */
-        public void setPrefixes()
+        public void setWords()
         {
-            this.prefixTo = 0;
+            this.words = 0;
             for (int x = 0; x < 26; x++)
             {
                 if (nexts[x] != null)
                 {
-                    this.prefixTo += nexts[x].getPrefixes();
+                    this.words += nexts[x].getWords();
                 }
             }
         }
@@ -85,10 +76,10 @@ public class AutoComplete
          *
          * @return number of words prefixed by this one
          */
-        public int getPrefixes()
+        public int getWords()
         {
-            setPrefixes();
-            return this.prefixTo + (this.data != null ? 1 : 0);
+            setWords();
+            return this.words + (this.data != null ? 1 : 0);
         }
 
 
@@ -163,7 +154,7 @@ public class AutoComplete
         /**
          * @return a JSON representation of the node and all it's subnodes
          */
-        public String toString()
+        public String altToString()
         {
             String s1 = data == null ? "" : this.data.toString();
             String s = "{ term: '" + s1 + "'";
@@ -172,7 +163,7 @@ public class AutoComplete
                 if (nexts[i] != null)
                 {
                     s += ",";
-                    s += ((char)(i + 97)) + ":" + nexts[i].toString();
+                    s += ((char)(i + 97)) + ":" + nexts[i].altToString();
                 }
 
             }
@@ -293,6 +284,7 @@ public class AutoComplete
         {
             return location - 10;
         }
+        //throw new IllegalArgumentException();
         return -1;
     }
 
@@ -419,6 +411,40 @@ public class AutoComplete
      */
     public String toString()
     {
-        return root.toString();
+        return root.altToString();
+    }
+
+
+    /**
+     * gets all terms with a specific query
+     *
+     * @param query
+     *            the string to match
+     * @return a stack of the possible terms in alphabetical order (i hope)
+     */
+    public ArrayList<Term> getSuggestions(String query) {
+        ArrayList<Term> s = new ArrayList<Term>();
+        getTermsUnder(getSubTrie(query), s);
+        return s;
+    }
+
+
+    private void getTermsUnder(Node n, ArrayList<Term> s)
+    {
+        if (n == null)
+        {
+            return;
+        }
+        if(n.getData()!= null)
+        {
+            if(n.getData().length() > 0)
+            {
+                s.add(n.getData());
+            }
+        }
+        for(int i = 0; i < 26; i ++)
+        {
+           getTermsUnder(n.getNext((char)(i + 10)), s);
+        }
     }
 }
