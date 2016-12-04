@@ -2,7 +2,6 @@ package tests;
 
 import code.Term;
 import code.AutoComplete;
-import code.AutoComplete.Node;
 
 // -------------------------------------------------------------------------
 /**
@@ -21,7 +20,7 @@ public class TermTest
     private AutoComplete tr;
 
     /**
-   */ 
+   */
 
 
     public void setUp()
@@ -46,7 +45,7 @@ public class TermTest
             () -> tr.addTerm(new Term(null, 2)),
             NullPointerException.class);
         tr.addTerm(new Term("", 4));
-        Node root = tr.getRoot();
+        code.Node root = tr.getRoot();
         tr.addTerm(new Term("money", 3456));
         tr.addTerm(new Term("zebra", 3));
         tr.addTerm(new Term("aqwer", 4));
@@ -54,6 +53,7 @@ public class TermTest
         assertEquals("zebra", tr.getSubTrie("zebra").getData().getQuery());
         assertNull(tr.getSubTrie("s"));
         assertEquals(7, root.getWords());
+        assertEquals(23, root.getPrefixes());
     }
 
 
