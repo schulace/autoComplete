@@ -121,7 +121,7 @@ public class AutoComplete
         {
             return location - 10;
         }
-        //throw new IllegalArgumentException();
+        // throw new IllegalArgumentException();
         return -1;
     }
 
@@ -155,7 +155,6 @@ public class AutoComplete
         return getSubTrie(
             prefix.substring(1, prefix.length()),
             n.getNext(prefix.charAt(0)));
-
     }
 
 
@@ -177,11 +176,12 @@ public class AutoComplete
      * @param currentPrefix
      *            the letters preceeding this insertion in the trie
      */
-    private void addTerm(
+    private int addTerm(
         StringBuilder s,
         Node n,
         StringBuilder currentPrefix,
-        int weight)
+        int weight,
+        int nodesCreated, int otherCounter)
     {
         /*
          * if the length is 0 and the currently examined node doesn't have a
@@ -198,7 +198,6 @@ public class AutoComplete
              * and not overwrite)
              */
             n.setData(new Term(currentPrefix.toString(), weight));
-            return;
         }
         /*
          * if the next node that this method would call is null, create a node
@@ -206,7 +205,14 @@ public class AutoComplete
          */
         if (n.getNext(s.charAt(0)) == null)
         {
+            nodesCreated += 1;
             n.insert(s.charAt(0), new Node(null));
+            char c = s.charAt(0);
+            s.delete(0, 1);
+            currentPrefix.append(c);
+            n.setPrefixes(n.getPrefixes() +
+                addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated, Math.min(otherCounter, nodesCreated)));
+            return nodesCreated;
         }
         /*
          * recursively calls this method with term being 1 character shorter
@@ -218,11 +224,9 @@ public class AutoComplete
         char c = s.charAt(0);
         s.delete(0, 1);
         currentPrefix.append(c);
-        addTerm(
-            s,
-            n.getNext(c),
-            currentPrefix,
-            weight);
+        n.setPrefixes(n.getPrefixes() +
+            addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated, Math.min(otherCounter, nodesCreated)));
+        return nodesCreated;
     }
 
 
@@ -259,7 +263,8 @@ public class AutoComplete
      *            the string to match
      * @return a stack of the possible terms in alphabetical order (i hope)
      */
-    public ArrayList<Term> getSuggestions(String query) {
+    public ArrayList<Term> getSuggestions(String query)
+    {
         ArrayList<Term> s = new ArrayList<Term>();
         getTermsUnder(getSubTrie(query), s);
         return s;
@@ -272,16 +277,16 @@ public class AutoComplete
         {
             return;
         }
-        if(n.getData()!= null)
+        if (n.getData() != null)
         {
-            if(n.getData().length() > 0)
+            if (n.getData().length() > 0)
             {
                 s.add(n.getData());
             }
         }
-        for(int i = 0; i < 26; i ++)
+        for (int i = 0; i < 26; i++)
         {
-           getTermsUnder(n.getNext((char)(i + 10)), s);
+            getTermsUnder(n.getNext((char)(i + 10)), s);
         }
     }
 }
