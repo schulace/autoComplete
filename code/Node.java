@@ -15,70 +15,17 @@ public class Node
 
     private Term   data;
     private Node[] nexts;
-    private int    words;
+    private boolean    words;
     private int prefixes;
 
-    // ----------------------------------------------------------
-    /**
-     * figures out how many words the current node is a prefix to
-     */
-    public void setWords()
-    {
-        this.words = 0;
-        for (int x = 0; x < 26; x++)
-        {
-            if (nexts[x] != null)
-            {
-                this.words += nexts[x].getWords();
-            }
-        }
-    }
-
-    // ----------------------------------------------------------
-    /**
-     * determines the number of prefixes under the current node.
-     */
-    public void setPrefixes()
-    {
-        this.prefixes = 0;
-        for (int x = 0; x < 26; x++)
-        {
-            if (nexts[x] != null)
-            {
-                this.prefixes += nexts[x].getPrefixes();
-            }
-        }
-    }
-
-    // ----------------------------------------------------------
-    /**
-     * gets the number of nodes that this node prefixes + 1 (For this node)
-     * @return number of prefixes + 1
-     */
-    public int getPrefixes()
-    {
-        setPrefixes();
-        return this.prefixes + 1;
-    }
-
-    // ----------------------------------------------------------
-    /**
-     * gets the number of prefixes
-     *
-     * @return number of words prefixed by this one
-     */
-    public int getWords()
-    {
-        setWords();
-        return this.words + (this.data != null ? 1 : 0);
-    }
 
 
     public Node(Term t)
     {
         data = t;
         nexts = new Node[26];
-        words = prefixes = 0;
+        words = false;
+        prefixes = 0;
     }
 
     // ----------------------------------------------------------
@@ -145,6 +92,46 @@ public class Node
      * @param t
      *            the term
      */
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the words
+     */
+    public boolean getWords()
+    {
+        return words;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @param words the words to set
+     */
+    public void setWords(boolean words)
+    {
+        this.words = words;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the prefixes
+     */
+    public int getPrefixes()
+    {
+        return prefixes;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @param prefixes the prefixes to set
+     */
+    public void setPrefixes(int prefixes)
+    {
+        this.prefixes = prefixes;
+    }
 
 
     // ----------------------------------------------------------

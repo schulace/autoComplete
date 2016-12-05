@@ -35,18 +35,10 @@ public class AutoComplete
         return this.root;
     }
 
-    // ----------------------------------------------------------
-    /**
-     * Adds a term to the AutoComplete
-     *
-     * @param t
-     *            the term to add
-     */
-
 
     // ----------------------------------------------------------
     /**
-     * adds a word to the trie
+     * adds a word to the trie, and also ensures that addTerm (private) is not called with a null value for the node.
      *
      * @param strIn
      *            string to insert
@@ -58,6 +50,10 @@ public class AutoComplete
         if (strIn == null)
         {
             throw new NullPointerException("input can't be null");
+        }
+        if(getSubTrie(strIn) != null)
+        {
+            return;
         }
         if (strIn.length() > 0)
         {
@@ -72,30 +68,11 @@ public class AutoComplete
 
     // ----------------------------------------------------------
     /**
-     * Place a description of your method here.
-     *
-     * @param term
-     */
-    public void addTerm(Term term)
-    {
-        if (term.getQuery() != null && term.getQuery().length() > 0)
-        {
-            addTerm(
-                new StringBuilder(term.getQuery()),
-                root,
-                new StringBuilder(term.getQuery().length()),
-                term.getWeight());
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * gets a tree with the given prefix
      *
      * @param prefix
-     *            unused.
-     * @return unused
+     *            the prefix to look for.
+     * @return a trie under a certain prefix
      */
     public Node getSubTrie(String prefix)
     {
@@ -105,7 +82,7 @@ public class AutoComplete
 
     // ----------------------------------------------------------
     /**
-     * unused method
+     * unused method @see Node.getNext()
      *
      * @param location
      *            a character
@@ -119,7 +96,7 @@ public class AutoComplete
         }
         if (location >= 'A' && location <= 'Z')
         {
-            return location - 10;
+            return location - 65;
         }
         //throw new IllegalArgumentException();
         return -1;
@@ -128,9 +105,7 @@ public class AutoComplete
 
     // ----------------------------------------------------------
     /**
-     * never gets used dont bother I wrote something different this is for the
-     * api.
-     *
+     * gets a trie under a certain prefix
      * @param prefix
      *            part of word already done with
      * @param n
@@ -146,10 +121,10 @@ public class AutoComplete
         if (n.getNext(prefix.charAt(0)) == null)
         {
             return null;
-/*
- * TODO comment above and decoment below to not return a null pointer when a
- * subNode doesn't exist for the current query.
- */
+            /*
+             * TODO comment above and decoment below to not return a null pointer when a
+             * subNode doesn't exist for the current query.
+             */
             // n.insert(prefix.charAt(0), new Node(null));
         }
         return getSubTrie(
@@ -183,6 +158,7 @@ public class AutoComplete
         StringBuilder currentPrefix,
         int weight)
     {
+        n.setPrefixes(n.getPrefixes() + 1);
         /*
          * if the length is 0 and the currently examined node doesn't have a
          * term, then the term that was passed belongs at this node. Then
@@ -198,6 +174,7 @@ public class AutoComplete
              * and not overwrite)
              */
             n.setData(new Term(currentPrefix.toString(), weight));
+            n.setWords(true);
             return;
         }
         /*
@@ -238,9 +215,8 @@ public class AutoComplete
     @SuppressWarnings("unused")
     private boolean isValidCharacter(char c)
     {
-        return (c >= 'A' && c <= 'Z') || (c >= 'A' && c <= 'Z');
+        return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
     }
-
 
     // ----------------------------------------------------------
     /**
@@ -251,7 +227,6 @@ public class AutoComplete
         return root.altToString();
     }
 
-
     /**
      * gets all terms with a specific query
      *
@@ -259,13 +234,40 @@ public class AutoComplete
      *            the string to match
      * @return a stack of the possible terms in alphabetical order (i hope)
      */
-    public ArrayList<Term> getSuggestions(String query) {
+    public ArrayList<Term> getSuggestions(String query)
+    {
+        if(query == null)
+        {
+            throw new NullPointerException("search term can not be null");
+        }
         ArrayList<Term> s = new ArrayList<Term>();
         getTermsUnder(getSubTrie(query), s);
         return s;
     }
 
-
+    /**
+     * counts the number of words that start with the given prefix
+     * @param prefix the prefix to see starting with.
+     * @return the number of words starting with prefix
+     */
+    public int countPrefixes(String prefix)
+    {
+        Node n = getSubTrie(prefix);
+        if (n == null)
+        {
+            return 0;
+        }
+        return n.getPrefixes();
+    }
+    
+    /**
+     * gets all terms undder a node recursively
+     *
+     * @param n
+     *            the node to look for terms under and in
+     * @param s
+     *            the list to add terms to
+     */
     private void getTermsUnder(Node n, ArrayList<Term> s)
     {
         if (n == null)
@@ -281,7 +283,7 @@ public class AutoComplete
         }
         for(int i = 0; i < 26; i ++)
         {
-           getTermsUnder(n.getNext((char)(i + 10)), s);
+           getTermsUnder(n.getNext((char)(i + 97)), s);
         }
     }
 }
