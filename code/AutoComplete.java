@@ -65,7 +65,7 @@ public class AutoComplete
                 new StringBuilder(strIn),
                 root,
                 new StringBuilder(strIn.length()),
-                weight);
+                weight, 0, 0);
         }
     }
 
@@ -84,7 +84,7 @@ public class AutoComplete
                 new StringBuilder(term.getQuery()),
                 root,
                 new StringBuilder(term.getQuery().length()),
-                term.getWeight());
+                term.getWeight(), 0, 0);
         }
     }
 
@@ -198,6 +198,7 @@ public class AutoComplete
              * and not overwrite)
              */
             n.setData(new Term(currentPrefix.toString(), weight));
+            return nodesCreated;
         }
         /*
          * if the next node that this method would call is null, create a node
@@ -206,13 +207,20 @@ public class AutoComplete
         if (n.getNext(s.charAt(0)) == null)
         {
             nodesCreated += 1;
+            n.setPrefixes(n.getPrefixes() + s.length());
             n.insert(s.charAt(0), new Node(null));
+            char c = s.charAt(0);
+            s.delete(0, 1);
+            currentPrefix.append(c);
+            addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated, Math.min(otherCounter, nodesCreated));
+        }
+        else
+        {
             char c = s.charAt(0);
             s.delete(0, 1);
             currentPrefix.append(c);
             n.setPrefixes(n.getPrefixes() +
                 addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated, Math.min(otherCounter, nodesCreated)));
-            return nodesCreated;
         }
         /*
          * recursively calls this method with term being 1 character shorter
@@ -221,11 +229,6 @@ public class AutoComplete
          * currentPrefix with the first character of term appended. (basically
          * moves a character from term's start to currentPrefix's end)
          */
-        char c = s.charAt(0);
-        s.delete(0, 1);
-        currentPrefix.append(c);
-        n.setPrefixes(n.getPrefixes() +
-            addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated, Math.min(otherCounter, nodesCreated)));
         return nodesCreated;
     }
 
