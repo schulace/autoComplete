@@ -1,6 +1,8 @@
 package tests;
 
 import code.Term;
+import java.util.ArrayList;
+import java.util.Arrays;
 import code.AutoComplete;
 
 // -------------------------------------------------------------------------
@@ -49,13 +51,28 @@ public class TermTest
         tr.addTerm(new Term("money", 3456));
         tr.addTerm(new Term("zebra", 3));
         tr.addTerm(new Term("aqwer", 4));
+        tr.addTerm(new Term("monetization", 5));
         System.out.println(tr.toString());
         assertEquals("zebra", tr.getSubTrie("zebra").getData().getQuery());
         assertNull(tr.getSubTrie("s"));
-        assertEquals(7, root.getWords());
         assertEquals(23, root.getPrefixes());
+        assertEquals(7, root.getWords());
     }
 
+    // ----------------------------------------------------------
+    /**
+     * test for getSuggestions()
+     */
+    public void testGetSuggestions()
+    {
+        Term st = new Term("aaaa", 3000);
+        tr.addTerm(st);
+        tr.addTerm(new Term("aba", 20));
+        tr.addTerm(new Term("aaa", 4));
+//        System.out.println(tr.toString());
+        ArrayList<Term> tList = tr.getSuggestions("a");
+//        System.out.println(tList);
+    }
 
     // ----------------------------------------------------------
     /**

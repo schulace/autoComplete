@@ -65,7 +65,7 @@ public class AutoComplete
                 new StringBuilder(strIn),
                 root,
                 new StringBuilder(strIn.length()),
-                weight, 0, 0);
+                weight, 0);
         }
     }
 
@@ -84,7 +84,7 @@ public class AutoComplete
                 new StringBuilder(term.getQuery()),
                 root,
                 new StringBuilder(term.getQuery().length()),
-                term.getWeight(), 0, 0);
+                term.getWeight(), 0);
         }
     }
 
@@ -176,12 +176,7 @@ public class AutoComplete
      * @param currentPrefix
      *            the letters preceeding this insertion in the trie
      */
-    private int addTerm(
-        StringBuilder s,
-        Node n,
-        StringBuilder currentPrefix,
-        int weight,
-        int nodesCreated, int otherCounter)
+    private int addTerm( StringBuilder s, Node n, StringBuilder currentPrefix, int weight, int nodesCreated)
     {
         /*
          * if the length is 0 and the currently examined node doesn't have a
@@ -212,7 +207,7 @@ public class AutoComplete
             char c = s.charAt(0);
             s.delete(0, 1);
             currentPrefix.append(c);
-            addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated, Math.min(otherCounter, nodesCreated));
+            addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated);
         }
         else
         {
@@ -220,7 +215,7 @@ public class AutoComplete
             s.delete(0, 1);
             currentPrefix.append(c);
             n.setPrefixes(n.getPrefixes() +
-                addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated, Math.min(otherCounter, nodesCreated)));
+                addTerm(s, n.getNext(c), currentPrefix, weight, nodesCreated));
         }
         /*
          * recursively calls this method with term being 1 character shorter
@@ -276,20 +271,19 @@ public class AutoComplete
 
     private void getTermsUnder(Node n, ArrayList<Term> s)
     {
-        if (n == null)
+        if (n != null)
         {
-            return;
-        }
-        if (n.getData() != null)
-        {
-            if (n.getData().length() > 0)
+            if (n.getData() != null)
             {
-                s.add(n.getData());
+                if (n.getData().getQuery().length() > 0)
+                {
+                    s.add(n.getData());
+                }
             }
-        }
-        for (int i = 0; i < 26; i++)
-        {
-            getTermsUnder(n.getNext((char)(i + 10)), s);
+            for (int i = 0; i < 26; i++)
+            {
+                getTermsUnder(n.getNext((char)(i + 97)), s);
+            }
         }
     }
 }
