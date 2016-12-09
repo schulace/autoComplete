@@ -1,7 +1,6 @@
-package code;
+package Trie;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 // -------------------------------------------------------------------------
 /**
@@ -11,14 +10,14 @@ import java.util.Stack;
  * @version Nov 11, 2016
  */
 
-public class AutoComplete
+public class Autocomplete
 {
 
     // ----------------------------------------------------------
     /**
-     * creates a new AutoComplete with an empty node as the head.
+     * creates a new Autocomplete with an empty node as the head.
      */
-    public AutoComplete()
+    public Autocomplete()
     {
         root = new Node(null);
     }
@@ -38,7 +37,8 @@ public class AutoComplete
 
     // ----------------------------------------------------------
     /**
-     * adds a word to the trie, and also ensures that addTerm (private) is not called with a null value for the node.
+     * adds a word to the trie, and also ensures that addTerm (private) is not
+     * called with a null value for the node.
      *
      * @param strIn
      *            string to insert
@@ -51,7 +51,7 @@ public class AutoComplete
         {
             throw new NullPointerException("input can't be null");
         }
-        if(getSubTrie(strIn) != null)
+        if (getSubTrie(strIn) != null)
         {
             return;
         }
@@ -98,7 +98,7 @@ public class AutoComplete
         {
             return location - 65;
         }
-        //throw new IllegalArgumentException();
+        // throw new IllegalArgumentException();
         return -1;
     }
 
@@ -106,6 +106,7 @@ public class AutoComplete
     // ----------------------------------------------------------
     /**
      * gets a trie under a certain prefix
+     *
      * @param prefix
      *            part of word already done with
      * @param n
@@ -122,8 +123,8 @@ public class AutoComplete
         {
             return null;
             /*
-             * TODO comment above and decoment below to not return a null pointer when a
-             * subNode doesn't exist for the current query.
+             * TODO comment above and decoment below to not return a null
+             * pointer when a subNode doesn't exist for the current query.
              */
             // n.insert(prefix.charAt(0), new Node(null));
         }
@@ -179,7 +180,7 @@ public class AutoComplete
         }
         /*
          * if the next node that this method would call is null, create a node
-         * there and insert it into the AutoComplete.
+         * there and insert it into the Autocomplete.
          */
         if (n.getNext(s.charAt(0)) == null)
         {
@@ -195,28 +196,9 @@ public class AutoComplete
         char c = s.charAt(0);
         s.delete(0, 1);
         currentPrefix.append(c);
-        addTerm(
-            s,
-            n.getNext(c),
-            currentPrefix,
-            weight);
+        addTerm(s, n.getNext(c), currentPrefix, weight);
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * not used yet, may be useful later
-     *
-     * @param c
-     *            character ot check
-     * @return whether this will return a valid value when run through Node's
-     *         getNext()
-     */
-    @SuppressWarnings("unused")
-    private boolean isValidCharacter(char c)
-    {
-        return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
-    }
 
     // ----------------------------------------------------------
     /**
@@ -227,6 +209,7 @@ public class AutoComplete
         return root.altToString();
     }
 
+
     /**
      * gets all terms with a specific query
      *
@@ -236,7 +219,7 @@ public class AutoComplete
      */
     public ArrayList<Term> getSuggestions(String query)
     {
-        if(query == null)
+        if (query == null)
         {
             throw new NullPointerException("search term can not be null");
         }
@@ -245,9 +228,12 @@ public class AutoComplete
         return s;
     }
 
+
     /**
      * counts the number of words that start with the given prefix
-     * @param prefix the prefix to see starting with.
+     *
+     * @param prefix
+     *            the prefix to see starting with.
      * @return the number of words starting with prefix
      */
     public int countPrefixes(String prefix)
@@ -259,7 +245,8 @@ public class AutoComplete
         }
         return n.getPrefixes();
     }
-    
+
+
     /**
      * gets all terms undder a node recursively
      *
@@ -274,16 +261,16 @@ public class AutoComplete
         {
             return;
         }
-        if(n.getData()!= null)
+        if (n.getData() != null)
         {
-            if(n.getData().length() > 0)
+            if (n.getData().length() > 0)
             {
                 s.add(n.getData());
             }
         }
-        for(int i = 0; i < 26; i ++)
+        for (int i = 0; i < 26; i++)
         {
-           getTermsUnder(n.getNext((char)(i + 97)), s);
+            getTermsUnder(n.getNext((char)(i + 97)), s);
         }
     }
 }

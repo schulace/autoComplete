@@ -1,8 +1,8 @@
 package tests;
 
-import code.Term;
-import code.AutoComplete;
-import code.Node;
+import Trie.Autocomplete;
+import Trie.Node;
+import Trie.Term;
 
 // -------------------------------------------------------------------------
 /**
@@ -17,16 +17,17 @@ public class TermTest
     extends student.TestCase
 {
 
-    private AutoComplete tr;
+    private Autocomplete tr;
+
 
     /**
-   */
-
+    */
 
     public void setUp()
     {
-        tr = new AutoComplete();
+        tr = new Autocomplete();
     }
+
 
     // ----------------------------------------------------------
     /**
@@ -34,41 +35,43 @@ public class TermTest
      */
     public void testThing()
     {
-        tr.addWord( "as", 20);
-        tr.addWord( "asdf", 4);
-        tr.addWord( "qqq", 2);
+        tr.addWord("as", 20);
+        tr.addWord("asdf", 4);
+        tr.addWord("qqq", 2);
         assertErrorThrown(
-            () -> tr.addWord( null, 2),
+            () -> tr.addWord(null, 2),
             NullPointerException.class);
-        tr.addWord( "", 4);
-        code.Node root = tr.getRoot();
-        tr.addWord( "money", 3456);
-        tr.addWord( "zebra", 3);
-        tr.addWord( "aqwer", 4);
+        tr.addWord("", 4);
+        Trie.Node root = tr.getRoot();
+        tr.addWord("money", 3456);
+        tr.addWord("zebra", 3);
+        tr.addWord("aqwer", 4);
         System.out.println(tr.toString());
         assertEquals("zebra", tr.getSubTrie("zebra").getData().getQuery());
         assertNull(tr.getSubTrie("s"));
         assertEquals(6, root.getPrefixes());
     }
 
+
     /**
      * tests the finder and prefix counter.
      */
     public void testFind()
     {
-        tr.addWord( "as", 20);
-        tr.addWord( "asdf", 4);
-        tr.addWord( "qqq", 2);
+        tr.addWord("as", 20);
+        tr.addWord("asdf", 4);
+        tr.addWord("qqq", 2);
         assertErrorThrown(
-            () -> tr.addWord( null, 2),
+            () -> tr.addWord(null, 2),
             NullPointerException.class);
-        tr.addWord( "", 4);
+        tr.addWord("", 4);
         Node root = tr.getRoot();
-        tr.addWord( "money", 3456);
-        tr.addWord( "zebra", 3);
-        tr.addWord( "aqwer", 4);
+        tr.addWord("money", 3456);
+        tr.addWord("zebra", 3);
+        tr.addWord("aqwer", 4);
         System.out.println(tr.getSuggestions(""));
         assertEquals(2, tr.countPrefixes("as"));
+        assertEquals(0, tr.countPrefixes("whatthefuckisgoingon"));
     }
 
 

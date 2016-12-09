@@ -1,4 +1,4 @@
-package code;
+package Trie;
 
 // -------------------------------------------------------------------------
 /**
@@ -145,10 +145,6 @@ public class Node
         if (c >= 'a' && c <= 'z')
         {
             return nexts[c - 97];
-        }
-        if (c >= 'A' && c <= 'Z')
-        {
-            return nexts[c - 10];
         }
         return null;
     }

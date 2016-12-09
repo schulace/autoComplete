@@ -1,15 +1,14 @@
-package code;
+package Trie;
 
 import java.util.Comparator;
 
 // -------------------------------------------------------------------------
 /**
- *  Write a one-sentence summary of your class here.
- *  Follow it with additional details about its purpose, what abstraction
- *  it represents, and how to use it.
+ * Write a one-sentence summary of your class here. Follow it with additional
+ * details about its purpose, what abstraction it represents, and how to use it.
  *
- *  @author schulace
- *  @version Nov 25, 2016
+ * @author schulace
+ * @version Nov 25, 2016
  */
 public class Term
 
@@ -145,8 +144,10 @@ public class Term
                 {
                     return 1;
                 }
-                String str1 = o1.getQuery().substring(0, Math.min(r, o1.length()-1));
-                String str2 = o2.getQuery().substring(0, Math.min(r, o2.length()-1));
+                String str1 =
+                    o1.getQuery().substring(0, Math.min(r, o1.length() - 1));
+                String str2 =
+                    o2.getQuery().substring(0, Math.min(r, o2.length() - 1));
                 return str1.compareTo(str2);
 
             }

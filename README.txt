@@ -12,7 +12,8 @@
 
 /**********************************************************************
 * 10 (?) I didn't track this, and spend more time than I needed to on 
-* a few parts (like using stringBuilder instead of String for addTerm)
+* a few parts trying to optimize. (like using stringBuilder instead of 
+* String for addTerm)
 ***********************************************************************/
 
 
