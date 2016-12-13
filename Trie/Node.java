@@ -1,5 +1,7 @@
 package Trie;
 
+import java.util.Arrays;
+
 // -------------------------------------------------------------------------
 /**
  *  Write a one-sentence summary of your class here.
@@ -20,6 +22,11 @@ public class Node
 
 
 
+    // ----------------------------------------------------------
+    /**
+     * Create a new Node object.
+     * @param t the term to fill the node with
+     */
     public Node(Term t)
     {
         data = t;
@@ -167,11 +174,20 @@ public class Node
             }
 
         }
-//if (nexts[25] != null)
-//{
-//s += (char)(25+97) +':'+ nexts[25].toString();
-//}
         s += "}";
         return s;
     }
+
+    // ----------------------------------------------------------
+    /**
+     * Place a description of your method here.
+     * @return a String representation of this object
+     */
+    @Override
+    public String toString()
+    {
+        return "Node [data=" + data + ", nexts=" + Arrays.toString(nexts)
+            + ", words=" + words + ", prefixes=" + prefixes + "]";
+    }
+
 }
